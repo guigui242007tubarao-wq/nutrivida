@@ -2,39 +2,38 @@
 
 import { useMemo, useState } from "react";
 import Section from "@/components/Section";
-import { clamp, round } from "@/lib/utils";
+import {
+  Sexo,
+  NivelAtividade,
+  Objetivo,
+  clamp,
+  round,
+  calcIMC,
+  classificarIMC,
+  calcTMB,
+  calcTDEE,
+  calcMetaCalorias,
+  calcProteina,
+  calcAguaLitros,
+} from "@/lib/calculations";
 
-type Sexo = "masculino" | "feminino";
-type NivelAtividade = "sedentario" | "leve" | "moderado" | "alto" | "muito_alto";
-type Objetivo = "manter" | "perder" | "ganhar";
-
-const atividadeFactor: Record<NivelAtividade, number> = {
-  sedentario: 1.2,
-  leve: 1.375,
-  moderado: 1.55,
-  alto: 1.725,
-  muito_alto: 1.9,
+type SavedGoal = {
+  savedAt: string;
+  sexo: Sexo;
+  peso: number;
+  altura: number;
+  idade: number;
+  atividade: NivelAtividade;
+  objetivo: Objetivo;
+  tmb: number;
+  tdee: number;
+  meta: number;
+  protMin: number;
+  protMax: number;
+  aguaL?: number;
 };
 
-// Mifflin-St Jeor
-function calcTMB(sexo: Sexo, pesoKg: number, alturaCm: number, idade: number) {
-  const base = 10 * pesoKg + 6.25 * alturaCm - 5 * idade;
-  return sexo === "masculino" ? base + 5 : base - 161;
-}
-
-function calcIMC(pesoKg: number, alturaCm: number) {
-  const h = alturaCm / 100;
-  return pesoKg / (h * h);
-}
-
-function classificarIMC(imc: number) {
-  if (imc < 18.5) return "Abaixo do peso";
-  if (imc < 25) return "Peso normal";
-  if (imc < 30) return "Sobrepeso";
-  if (imc < 35) return "Obesidade I";
-  if (imc < 40) return "Obesidade II";
-  return "Obesidade III";
-}
+const LS_KEY = "nutrivida:goal";
 
 export default function CalculadorasPage() {
   const [sexo, setSexo] = useState<Sexo>("masculino");
@@ -43,6 +42,7 @@ export default function CalculadorasPage() {
   const [idade, setIdade] = useState(22);
   const [atividade, setAtividade] = useState<NivelAtividade>("moderado");
   const [objetivo, setObjetivo] = useState<Objetivo>("manter");
+  const [mostrarAgua, setMostrarAgua] = useState(true);
 
   const safe = useMemo(() => {
     const pesoOk = clamp(Number(peso) || 0, 30, 250);
@@ -54,18 +54,11 @@ export default function CalculadorasPage() {
   const resultados = useMemo(() => {
     const imc = calcIMC(safe.pesoOk, safe.alturaOk);
     const tmb = calcTMB(sexo, safe.pesoOk, safe.alturaOk, safe.idadeOk);
-    const tdee = tmb * atividadeFactor[atividade];
+    const tdee = calcTDEE(tmb, atividade);
+    const meta = calcMetaCalorias(tdee, objetivo);
 
-    const meta =
-      objetivo === "perder"
-        ? tdee - 400
-        : objetivo === "ganhar"
-        ? tdee + 250
-        : tdee;
-
-    // sugestão simples de proteína (1.6 a 2.2 g/kg)
-    const protMin = safe.pesoOk * 1.6;
-    const protMax = safe.pesoOk * 2.2;
+    const prot = calcProteina(safe.pesoOk);
+    const aguaL = calcAguaLitros(safe.pesoOk);
 
     return {
       imc: round(imc, 1),
@@ -73,21 +66,44 @@ export default function CalculadorasPage() {
       tmb: Math.round(tmb),
       tdee: Math.round(tdee),
       meta: Math.round(meta),
-      protMin: Math.round(protMin),
-      protMax: Math.round(protMax),
+      protMin: Math.round(prot.min),
+      protMax: Math.round(prot.max),
+      aguaL: round(aguaL, 1),
     };
   }, [safe, sexo, atividade, objetivo]);
+
+  function salvarMeta() {
+    const payload: SavedGoal = {
+      savedAt: new Date().toISOString(),
+      sexo,
+      peso: safe.pesoOk,
+      altura: safe.alturaOk,
+      idade: safe.idadeOk,
+      atividade,
+      objetivo,
+      tmb: resultados.tmb,
+      tdee: resultados.tdee,
+      meta: resultados.meta,
+      protMin: resultados.protMin,
+      protMax: resultados.protMax,
+      aguaL: mostrarAgua ? resultados.aguaL : undefined,
+    };
+
+    localStorage.setItem(LS_KEY, JSON.stringify(payload));
+    alert("Meta salva ✅ (aparece na Home)");
+  }
 
   return (
     <div className="space-y-8">
       <div className="space-y-2">
         <h1 className="h1">Calculadoras</h1>
         <p className="muted">
-          Use como referência. Ajuste com o tempo conforme seu peso e desempenho evoluem.
+          Use como referência. Ajuste a cada 2–3 semanas conforme peso e desempenho.
         </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-[1.1fr_.9fr]">
+        {/* Form */}
         <div className="card space-y-5">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-1">
@@ -120,22 +136,12 @@ export default function CalculadorasPage() {
 
             <div className="space-y-1">
               <p className="label">Altura (cm)</p>
-              <input
-                className="input"
-                type="number"
-                value={altura}
-                onChange={(e) => setAltura(Number(e.target.value))}
-              />
+              <input className="input" type="number" value={altura} onChange={(e) => setAltura(Number(e.target.value))} />
             </div>
 
             <div className="space-y-1">
               <p className="label">Idade</p>
-              <input
-                className="input"
-                type="number"
-                value={idade}
-                onChange={(e) => setIdade(Number(e.target.value))}
-              />
+              <input className="input" type="number" value={idade} onChange={(e) => setIdade(Number(e.target.value))} />
             </div>
 
             <div className="space-y-1">
@@ -148,14 +154,32 @@ export default function CalculadorasPage() {
             </div>
           </div>
 
+          <label className="flex items-center gap-2 text-sm text-zinc-200">
+            <input
+              type="checkbox"
+              checked={mostrarAgua}
+              onChange={(e) => setMostrarAgua(e.target.checked)}
+            />
+            Mostrar sugestão de água/dia
+          </label>
+
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950/40 p-4">
             <p className="text-sm font-semibold">Dica</p>
             <p className="muted mt-1 text-sm">
-              Ajuste sua meta a cada 2–3 semanas. Se o peso não muda, altere ~150–250 kcal e observe.
+              Se o peso não muda por 2–3 semanas, ajuste ~150–250 kcal e observe de novo.
             </p>
           </div>
+
+          <button className="btn btn-primary w-fit" type="button" onClick={salvarMeta}>
+            Salvar meta
+          </button>
+
+          <p className="muted text-xs">
+            Salva no seu navegador (localStorage). Depois a gente conecta no painel admin/DB.
+          </p>
         </div>
 
+        {/* Resultados */}
         <div className="space-y-4">
           <Section title="Resultados">
             <div className="grid gap-4">
@@ -172,7 +196,7 @@ export default function CalculadorasPage() {
               </div>
 
               <div className="card">
-                <p className="text-sm font-medium text-zinc-200">Gasto diário (TDEE)</p>
+                <p className="text-sm font-medium text-zinc-200">TDEE (gasto total)</p>
                 <p className="kpi mt-2">{resultados.tdee}</p>
                 <p className="muted mt-2 text-sm">TMB × atividade</p>
               </div>
@@ -192,10 +216,18 @@ export default function CalculadorasPage() {
               <div className="card">
                 <p className="text-sm font-medium text-zinc-200">Proteína sugerida</p>
                 <p className="kpi mt-2">
-                  {resultados.protMin}–{resultados.protMax}g/dia
+                  {resultados.protMin}–{resultados.protMax} g/dia
                 </p>
                 <p className="muted mt-2 text-sm">Faixa comum: 1.6–2.2 g/kg</p>
               </div>
+
+              {mostrarAgua ? (
+                <div className="card">
+                  <p className="text-sm font-medium text-zinc-200">Água (estimativa)</p>
+                  <p className="kpi mt-2">{resultados.aguaL} L/dia</p>
+                  <p className="muted mt-2 text-sm">Regra simples: ~35ml/kg (ajuste pelo calor/treino)</p>
+                </div>
+              ) : null}
             </div>
           </Section>
         </div>
