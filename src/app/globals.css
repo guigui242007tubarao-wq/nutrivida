@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(250, 204, 21, 0.25);
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 shadow-sm;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-100 transition hover:bg-zinc-800;
+  }
+
+  .btn-primary {
+    @apply border-yellow-500/30 bg-yellow-500/10 hover:bg-yellow-500/15;
+  }
+
+  .muted {
+    @apply text-zinc-400;
+  }
+
+  .h1 {
+    @apply text-3xl font-semibold tracking-tight md:text-4xl;
+  }
+
+  .h2 {
+    @apply text-xl font-semibold tracking-tight md:text-2xl;
+  }
+
+  .kpi {
+    @apply text-2xl font-semibold;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-zinc-800 bg-zinc-950/40 px-4 py-2 text-sm outline-none ring-yellow-500/30 placeholder:text-zinc-600 focus:ring-2;
+  }
+
+  .label {
+    @apply text-xs font-medium text-zinc-300;
+  }
+}
