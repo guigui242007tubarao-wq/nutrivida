@@ -23,7 +23,8 @@ export default function FeaturedBanner({
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="card relative overflow-hidden p-0 transition hover:bg-zinc-900/60"
+      className="card relative overflow-hidden p-0 transition"
+      style={{ opacity: 0.98 }}
     >
       {hasCover ? (
         <div className="relative h-52 w-full md:h-64">
@@ -34,23 +35,77 @@ export default function FeaturedBanner({
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/95 via-zinc-950/45 to-zinc-950/15" />
+
+          {/* Overlay (no lugar do bg-gradient-to-t...) */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to top, rgba(0,0,0,0.82), rgba(0,0,0,0.35), rgba(0,0,0,0.10))",
+            }}
+          />
         </div>
       ) : (
         <div className="relative h-52 w-full md:h-64">
-          <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950" />
-          <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-yellow-500/10 blur-3xl" />
-          <div className="absolute -right-24 -bottom-24 h-72 w-72 rounded-full bg-yellow-500/5 blur-3xl" />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent" />
+          {/* Fundo premium sem classes de gradient */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(16,14,12,1), rgba(30,26,22,1), rgba(16,14,12,1))",
+            }}
+          />
+
+          {/* “Glows” suaves (sem yellow classes) */}
+          <div
+            className="absolute"
+            style={{
+              left: -120,
+              top: -120,
+              width: 320,
+              height: 320,
+              borderRadius: 9999,
+              background: "rgba(74,124,89,0.12)",
+              filter: "blur(50px)",
+            }}
+          />
+          <div
+            className="absolute"
+            style={{
+              right: -120,
+              bottom: -120,
+              width: 320,
+              height: 320,
+              borderRadius: 9999,
+              background: "rgba(255,214,170,0.06)",
+              filter: "blur(60px)",
+            }}
+          />
+
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0.12), transparent)",
+            }}
+          />
         </div>
       )}
 
       <div className="relative space-y-3 p-6">
         <div className="flex items-center justify-between gap-3">
-          <span className="rounded-full border border-yellow-500/30 bg-yellow-500/10 px-2 py-1 text-xs text-yellow-200">
+          <span
+            className="rounded-full px-2 py-1 text-xs"
+            style={{
+              border: "1px solid rgba(var(--primary), 0.45)",
+              background: "rgba(var(--primary), 0.18)",
+              color: "rgb(var(--text))",
+            }}
+          >
             {label}
           </span>
-          <span className="text-xs text-zinc-400">
+
+          <span className="muted text-xs">
             {new Date(post.date).toLocaleDateString("pt-BR")}
           </span>
         </div>
@@ -65,14 +120,21 @@ export default function FeaturedBanner({
           {(post.tags ?? []).slice(0, 4).map((t) => (
             <span
               key={t}
-              className="rounded-full border border-zinc-800 bg-zinc-950/40 px-2 py-1 text-xs text-zinc-300"
+              className="rounded-full px-2 py-1 text-xs"
+              style={{
+                border: "1px solid rgba(var(--border), 0.35)",
+                background: "rgba(var(--panel), 0.22)",
+                color: "rgb(var(--muted))",
+              }}
             >
               #{t}
             </span>
           ))}
         </div>
 
-        <div className="pt-1 text-sm text-yellow-200">Ler agora →</div>
+        <div className="pt-1 text-sm" style={{ color: "rgb(var(--primary))" }}>
+          Ler agora →
+        </div>
       </div>
     </Link>
   );

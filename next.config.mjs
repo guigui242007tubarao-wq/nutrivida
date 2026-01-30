@@ -1,12 +1,10 @@
-import createMDX from "@next/mdx";
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "images.unsplash.com" },
+    ],
+  },
 };
 
-const withMDX = createMDX({
-  extension: /\.(md|mdx)$/,
-});
-
-export default withMDX(nextConfig);
+export default nextConfig;

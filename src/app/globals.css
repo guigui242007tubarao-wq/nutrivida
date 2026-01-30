@@ -1,206 +1,162 @@
 @import "tailwindcss";
 
+/* =========================================================
+   NutriVida 2.0 — Minimalista Premium (Warm Charcoal)
+   (Sem @apply para não dar erro no VSCode)
+   ========================================================= */
 :root {
   color-scheme: dark;
+
+  /* Accent (Verde Sálvia) */
+  --primary: 74 124 89; /* #4A7C59 */
+
+  /* Base (grafite quente / café) */
+  --bg0: 16 14 12; /* #100E0C */
+  --bg1: 24 20 16; /* #181410 */
+
+  /* Cards/Painéis */
+  --panel: 30 26 22;  /* #1E1A16 */
+  --panel2: 24 21 18; /* #181512 */
+
+  /* Texto */
+  --text: 246 247 246;  /* #F6F7F6 */
+  --muted: 176 168 160; /* #B0A8A0 */
+
+  /* Bordas */
+  --border: 86 72 60; /* #56483C */
 }
 
-* {
-  box-sizing: border-box;
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+  color: rgb(var(--text));
+  background:
+    radial-gradient(900px 520px at 20% 10%, rgba(var(--primary), 0.12), transparent 60%),
+    radial-gradient(700px 420px at 85% 0%, rgba(255, 214, 170, 0.08), transparent 62%),
+    linear-gradient(180deg, rgb(var(--bg1)), rgb(var(--bg0)));
 }
 
-a {
-  text-decoration: none;
-}
+a { text-decoration: none; }
 
 ::selection {
-  background: rgba(250, 204, 21, 0.25);
+  background: rgba(74, 124, 89, 0.30);
 }
 
-@layer components {
-  .card {
-    @apply rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 shadow-sm;
-  }
+/* =========================================================
+   Classes globais (sem @apply)
+   ========================================================= */
 
-  .btn {
-    @apply inline-flex items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-100 transition hover:bg-zinc-800;
-  }
+.muted { color: rgb(var(--muted)); }
 
-  .btn-primary {
-    @apply border-yellow-500/30 bg-yellow-500/10 hover:bg-yellow-500/15;
-  }
-
-  .muted {
-    @apply text-zinc-400;
-  }
-
-  .h1 {
-    @apply text-3xl font-semibold tracking-tight md:text-4xl;
-  }
-
-  .h2 {
-    @apply text-xl font-semibold tracking-tight md:text-2xl;
-  }
-
-  .kpi {
-    @apply text-2xl font-semibold;
-  }
-
-  .input {
-    @apply w-full rounded-xl border border-zinc-800 bg-zinc-950/40 px-4 py-2 text-sm outline-none ring-yellow-500/30 placeholder:text-zinc-600 focus:ring-2;
-  }
-
-  .label {
-    @apply text-xs font-medium text-zinc-300;
-  }
+.h1 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-size: 2rem;
 }
-/* Starfield global (aparece em todas as páginas) */
-.starfield {
-  position: fixed;
-  inset: 0;
-  z-index: -10;
-  pointer-events: none;
-
-  /* camadas de estrelas bem pequenas (1px) */
-  background-image:
-    radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,.35) 60%, transparent 61%),
-    radial-gradient(1px 1px at 30% 70%, rgba(255,255,255,.25) 60%, transparent 61%),
-    radial-gradient(1px 1px at 55% 28%, rgba(255,255,255,.30) 60%, transparent 61%),
-    radial-gradient(1px 1px at 72% 62%, rgba(255,255,255,.22) 60%, transparent 61%),
-    radial-gradient(1px 1px at 88% 20%, rgba(255,255,255,.28) 60%, transparent 61%),
-
-    radial-gradient(1px 1px at 18% 88%, rgba(255,255,255,.18) 60%, transparent 61%),
-    radial-gradient(1px 1px at 44% 90%, rgba(255,255,255,.16) 60%, transparent 61%),
-    radial-gradient(1px 1px at 66% 84%, rgba(255,255,255,.20) 60%, transparent 61%),
-    radial-gradient(1px 1px at 86% 78%, rgba(255,255,255,.14) 60%, transparent 61%),
-
-    /* “poeira” bem leve */
-    radial-gradient(2px 2px at 40% 40%, rgba(250,204,21,.06) 40%, transparent 41%);
-
-  /* repete o padrão no espaço */
-  background-size:
-    420px 420px,
-    520px 520px,
-    600px 600px,
-    680px 680px,
-    760px 760px,
-    820px 820px,
-    900px 900px,
-    980px 980px,
-    1060px 1060px,
-    1200px 1200px;
-
-  opacity: 0.55;
-  filter: blur(0.2px);
-  animation: star-drift 160s linear infinite;
-}
-/* Starfield global (MAIS ESTRELAS) */
-.starfield {
-  position: fixed;
-  inset: 0;
-  z-index: -10;
-  pointer-events: none;
-
-  /* Muitas estrelas minúsculas (1px) em várias posições */
-  background-image:
-    radial-gradient(1px 1px at 6% 10%, rgba(255,255,255,.40) 60%, transparent 61%),
-    radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,.25) 60%, transparent 61%),
-    radial-gradient(1px 1px at 18% 34%, rgba(255,255,255,.32) 60%, transparent 61%),
-    radial-gradient(1px 1px at 24% 16%, rgba(255,255,255,.18) 60%, transparent 61%),
-    radial-gradient(1px 1px at 30% 58%, rgba(255,255,255,.28) 60%, transparent 61%),
-    radial-gradient(1px 1px at 36% 72%, rgba(255,255,255,.20) 60%, transparent 61%),
-    radial-gradient(1px 1px at 42% 28%, rgba(255,255,255,.30) 60%, transparent 61%),
-    radial-gradient(1px 1px at 48% 44%, rgba(255,255,255,.22) 60%, transparent 61%),
-    radial-gradient(1px 1px at 54% 12%, rgba(255,255,255,.26) 60%, transparent 61%),
-    radial-gradient(1px 1px at 60% 64%, rgba(255,255,255,.18) 60%, transparent 61%),
-    radial-gradient(1px 1px at 66% 38%, rgba(255,255,255,.24) 60%, transparent 61%),
-    radial-gradient(1px 1px at 72% 20%, rgba(255,255,255,.34) 60%, transparent 61%),
-    radial-gradient(1px 1px at 78% 74%, rgba(255,255,255,.16) 60%, transparent 61%),
-    radial-gradient(1px 1px at 84% 52%, rgba(255,255,255,.21) 60%, transparent 61%),
-    radial-gradient(1px 1px at 90% 30%, rgba(255,255,255,.27) 60%, transparent 61%),
-    radial-gradient(1px 1px at 94% 82%, rgba(255,255,255,.17) 60%, transparent 61%),
-
-    radial-gradient(1px 1px at 8% 78%, rgba(255,255,255,.14) 60%, transparent 61%),
-    radial-gradient(1px 1px at 16% 88%, rgba(255,255,255,.20) 60%, transparent 61%),
-    radial-gradient(1px 1px at 28% 90%, rgba(255,255,255,.16) 60%, transparent 61%),
-    radial-gradient(1px 1px at 40% 86%, rgba(255,255,255,.12) 60%, transparent 61%),
-    radial-gradient(1px 1px at 52% 92%, rgba(255,255,255,.18) 60%, transparent 61%),
-    radial-gradient(1px 1px at 64% 88%, rgba(255,255,255,.15) 60%, transparent 61%),
-    radial-gradient(1px 1px at 76% 90%, rgba(255,255,255,.12) 60%, transparent 61%),
-    radial-gradient(1px 1px at 88% 86%, rgba(255,255,255,.18) 60%, transparent 61%),
-
-    /* poeira levinha (amarelo bem fraco) */
-    radial-gradient(2px 2px at 45% 45%, rgba(250,204,21,.06) 45%, transparent 46%);
-
-  /* padrões menores = mais densidade */
-  background-size:
-    220px 220px,
-    260px 260px,
-    300px 300px,
-    340px 340px,
-    380px 380px,
-    420px 420px,
-    460px 460px,
-    500px 500px,
-    540px 540px,
-    580px 580px,
-    620px 620px,
-    660px 660px,
-    700px 700px,
-    740px 740px,
-    780px 780px,
-    820px 820px,
-    860px 860px,
-    900px 900px,
-    940px 940px,
-    980px 980px,
-    1020px 1020px,
-    1060px 1060px,
-    1100px 1100px,
-    1140px 1140px,
-    1500px 1500px;
-
-  opacity: 0.65;
-  filter: blur(0.18px);
-  animation: star-drift 140s linear infinite;
+@media (min-width: 768px) {
+  .h1 { font-size: 3rem; }
 }
 
-/* camada extra: estrelas um pouquinho maiores + brilho */
-.starfield::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-
-  background-image:
-    radial-gradient(1.5px 1.5px at 10% 40%, rgba(255,255,255,.20) 60%, transparent 61%),
-    radial-gradient(1.5px 1.5px at 22% 14%, rgba(255,255,255,.16) 60%, transparent 61%),
-    radial-gradient(1.5px 1.5px at 34% 62%, rgba(255,255,255,.18) 60%, transparent 61%),
-    radial-gradient(1.5px 1.5px at 46% 26%, rgba(255,255,255,.14) 60%, transparent 61%),
-    radial-gradient(1.5px 1.5px at 58% 76%, rgba(255,255,255,.16) 60%, transparent 61%),
-    radial-gradient(1.5px 1.5px at 70% 34%, rgba(255,255,255,.18) 60%, transparent 61%),
-    radial-gradient(1.5px 1.5px at 82% 18%, rgba(255,255,255,.14) 60%, transparent 61%),
-    radial-gradient(1.5px 1.5px at 92% 58%, rgba(255,255,255,.12) 60%, transparent 61%);
-
-  background-size: 900px 900px, 1100px 1100px, 1300px 1300px, 1500px 1500px,
-                   1700px 1700px, 1900px 1900px, 2100px 2100px, 2300px 2300px;
-
-  opacity: 0.50;
-  animation: star-twinkle 5.8s ease-in-out infinite;
+.h2 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  font-size: 1.25rem;
+}
+@media (min-width: 768px) {
+  .h2 { font-size: 1.5rem; }
 }
 
-@keyframes star-drift {
-  from { transform: translateY(0px); }
-  to   { transform: translateY(160px); }
+.kpi {
+  font-weight: 600;
+  font-size: 1.5rem;
 }
 
-@keyframes star-twinkle {
-  0%, 100% { opacity: 0.35; }
-  50%      { opacity: 0.70; }
+/* Card premium */
+.card {
+  border-radius: 1rem; /* ~rounded-2xl */
+  padding: 1.5rem;     /* p-6 */
+  background: linear-gradient(
+    180deg,
+    rgba(var(--panel), 0.72),
+    rgba(var(--panel2), 0.48)
+  );
+  border: 1px solid rgba(var(--border), 0.35);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.03) inset,
+    0 18px 60px rgba(0,0,0,0.40);
+  backdrop-filter: blur(10px);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .starfield,
-  .starfield::after {
-    animation: none;
-  }
+@media (min-width: 768px) {
+  .card { padding: 1.75rem; } /* md:p-7 */
 }
 
+/* Botões */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 0.75rem; /* rounded-xl */
+  padding: 0.5rem 1rem;   /* py-2 px-4 */
+  font-size: 0.875rem;    /* text-sm */
+  font-weight: 500;
+
+  transition: 160ms ease;
+  background: rgba(var(--panel), 0.45);
+  border: 1px solid rgba(var(--border), 0.35);
+  color: rgb(var(--text));
+}
+
+.btn:hover {
+  background: rgba(var(--panel), 0.62);
+}
+
+.btn-primary {
+  background: rgba(var(--primary), 0.18);
+  border: 1px solid rgba(var(--primary), 0.45);
+}
+.btn-primary:hover {
+  background: rgba(var(--primary), 0.26);
+}
+
+/* Inputs */
+.input {
+  width: 100%;
+  border-radius: 0.75rem; /* rounded-xl */
+  padding: 0.5rem 1rem;   /* py-2 px-4 */
+  font-size: 0.875rem;    /* text-sm */
+
+  background: rgba(var(--panel), 0.30);
+  border: 1px solid rgba(var(--border), 0.35);
+  color: rgb(var(--text));
+  outline: none;
+}
+
+.input:focus {
+  box-shadow: 0 0 0 2px rgba(var(--primary), 0.40);
+}
+
+.label {
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 500;
+  color: rgb(var(--muted));
+}
+
+.text-primary { color: rgb(var(--primary)); }
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+
+  border: 1px solid rgba(var(--border), 0.35);
+  background: rgba(var(--panel), 0.30);
+}
